@@ -4,10 +4,18 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoIterable;
+
+import dataObjects.Armor;
+import dataObjects.Ether;
+import dataObjects.GameCharacter;
+import dataObjects.Item;
+import dataObjects.Potion;
+import dataObjects.Weapon;
 
 public class MongoDB_Operations {
     MongoClient mongoDatabaseConnectionPool;
@@ -37,7 +45,25 @@ public class MongoDB_Operations {
     
     public CodecRegistry buildPOJO_codecRegistry() {
 		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
-		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+		
+		ClassModel<GameCharacter> gameCharacterModel = ClassModel.builder(GameCharacter.class).enableDiscriminator(true).build();
+		ClassModel<Weapon> weaponModel = ClassModel.builder(Weapon.class).enableDiscriminator(true).build();
+		ClassModel<Armor> armorModel = ClassModel.builder(Armor.class).enableDiscriminator(true).build();
+		ClassModel<Item> itemModel = ClassModel.builder(Item.class).enableDiscriminator(true).build();
+		ClassModel<Potion> potionModel = ClassModel.builder(Potion.class).enableDiscriminator(true).build();
+		ClassModel<Ether> etherModel = ClassModel.builder(Ether.class).enableDiscriminator(true).build();
+
+		PojoCodecProvider pojoCodecProvider = PojoCodecProvider
+			.builder()
+			.register(
+				gameCharacterModel,
+				weaponModel,
+				armorModel,
+				itemModel,
+				potionModel,
+				etherModel
+			)
+			.build();
 		CodecRegistry pojoCodecRegistry = fromRegistries(defaultCodecRegistry, fromProviders(pojoCodecProvider));
 		return pojoCodecRegistry;
 	}
