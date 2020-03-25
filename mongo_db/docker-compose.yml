@@ -1,0 +1,15 @@
+version: "3"
+services:
+    mongoDB:
+        image: mongo:4.0.4
+        container_name: "mongo_database"
+        environment:
+            - MONGO_INITDB_DATABASE=test_database
+            - MONGO_INITDB_ROOT_USERNAME=cesonia
+            - MONGO_INITDB_ROOT_PASSWORD=pizzaismagic
+        volumes:
+            - mongo_database_volume:/data/db
+        ports:
+            - "27017-27019:27017-27019"
+volumes:
+    mongo_database_volume:

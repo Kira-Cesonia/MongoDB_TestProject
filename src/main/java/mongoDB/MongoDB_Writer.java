@@ -2,9 +2,6 @@ package mongoDB;
 
 
 import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -24,7 +21,8 @@ public class MongoDB_Writer {
 		MongoDB_Connection mongoDB_connection = establishConnectionToMongoDB();
 		MongoClient mongoDatabaseConnectionPool = mongoDB_connection.mongoDatabaseConnectionPool;
 		
-		CodecRegistry pojoCodecRegistry = buildPOJO_codecRegistry();
+		MongoDB_Operations mongoDB_operations = new MongoDB_Operations(mongoDatabaseConnectionPool);
+		CodecRegistry pojoCodecRegistry = mongoDB_operations.buildPOJO_codecRegistry();
 		MongoDatabase characterDatabase = mongoDatabaseConnectionPool.getDatabase(CHARACTER_DATABASE_NAME);
 		characterDatabase = characterDatabase.withCodecRegistry(pojoCodecRegistry);
 	
@@ -42,12 +40,5 @@ public class MongoDB_Writer {
 	public MongoDB_Connection establishConnectionToMongoDB() throws DatabaseNotConnectedException {
 		MongoDB_Connection mongoDB_connection = new MongoDB_Connection();
 		return mongoDB_connection;
-	}
-
-	private CodecRegistry buildPOJO_codecRegistry() {
-		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
-		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-		CodecRegistry pojoCodecRegistry = fromRegistries(defaultCodecRegistry, fromProviders(pojoCodecProvider));
-		return pojoCodecRegistry;
 	}
 }

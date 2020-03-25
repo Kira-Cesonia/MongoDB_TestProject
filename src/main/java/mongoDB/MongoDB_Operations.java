@@ -1,5 +1,11 @@
 package mongoDB;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoIterable;
 
@@ -28,4 +34,11 @@ public class MongoDB_Operations {
         }
         return false;
     }
+    
+    public CodecRegistry buildPOJO_codecRegistry() {
+		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
+		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+		CodecRegistry pojoCodecRegistry = fromRegistries(defaultCodecRegistry, fromProviders(pojoCodecProvider));
+		return pojoCodecRegistry;
+	}
 }
