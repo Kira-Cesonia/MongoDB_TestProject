@@ -7,6 +7,5 @@ public class Ether extends Item {
 	
 	public Ether(String name, int amount) {
 		super(name, amount);
-		_t = this.getClass().toString();
 	}
 }

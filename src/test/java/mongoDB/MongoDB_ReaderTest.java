@@ -73,7 +73,7 @@ class MongoDB_ReaderTest {
 
 		int expectedPotionAmount = testCharacter.inventory.get(0).amount;
 		
-		assertEquals(3, expectedPotionAmount);
+		assertEquals(EXPECTED_POTION_AMOUNT, expectedPotionAmount);
 	}
 
 }

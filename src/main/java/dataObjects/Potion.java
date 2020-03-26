@@ -7,6 +7,5 @@ public class Potion extends Item {
 	
 	public Potion(String name, int amount) {
 		super(name, amount);
-		_t = this.getClass().toString();
 	}
 }
