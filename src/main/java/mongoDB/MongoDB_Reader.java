@@ -52,7 +52,8 @@ public class MongoDB_Reader {
 
 	private MongoCollection<GameCharacter> getCharacterCollection() {
 		MongoDatabase characterDatabase = mongoDatabaseConnectionPool.getDatabase(CHARACTER_DATABASE_NAME);
-		CodecRegistry pojoCodecRegistry = buildPOJO_codecRegistry();
+		MongoDB_Operations mongoDB_operations = new MongoDB_Operations(mongoDatabaseConnectionPool);
+		CodecRegistry pojoCodecRegistry = mongoDB_operations.buildPOJO_codecRegistry();
 
 		characterDatabase = characterDatabase.withCodecRegistry(pojoCodecRegistry);
 		
@@ -60,10 +61,4 @@ public class MongoDB_Reader {
 		return characterCollection;
 	}
 
-	private CodecRegistry buildPOJO_codecRegistry() {
-		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
-		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-		CodecRegistry pojoCodecRegistry = fromRegistries(defaultCodecRegistry, fromProviders(pojoCodecProvider));
-		return pojoCodecRegistry;
-	}
 }

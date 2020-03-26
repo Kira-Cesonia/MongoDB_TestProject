@@ -19,6 +19,7 @@ class MongoDB_ReaderTest {
 	private static final String TEST_CHARACTER_ID = "sylv01";
 	private static final String EXPECTED_CHARACTER_NAME = "Sylvia Zerin";
 	private static final String EXPECTED_WEAPON_NAME = "Gryphclaw";
+	private static final int EXPECTED_POTION_AMOUNT = 3;
 	private static final int EXPECTED_ARMOR_DEFENSE = 231;
 	private static MongoDB_Reader mongoDB_Reader;
 	private static MongoDB_Writer mongoDB_Writer;
@@ -64,6 +65,15 @@ class MongoDB_ReaderTest {
 		GameCharacter testCharacter = mongoDB_Reader.readCharacterFromMongoDB_byID(TEST_CHARACTER_ID);
 		
 		assertEquals(EXPECTED_CHARACTER_NAME, testCharacter.name);
+	}
+	
+	@Test
+	void readCharacterFromMongoDB_byID_shouldReturnCharacterWithCorrectPotionAmount() {
+		GameCharacter testCharacter = mongoDB_Reader.readCharacterFromMongoDB_byID(TEST_CHARACTER_ID);
+
+		int expectedPotionAmount = testCharacter.inventory.get(0).amount;
+		
+		assertEquals(3, expectedPotionAmount);
 	}
 
 }

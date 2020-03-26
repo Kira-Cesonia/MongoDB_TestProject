@@ -8,8 +8,6 @@ import org.bson.codecs.pojo.*;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoIterable;
 
-import codecs.GameCharacterCodec;
-import codecs.ItemCodec;
 import dataObjects.Armor;
 import dataObjects.Ether;
 import dataObjects.GameCharacter;
@@ -46,45 +44,33 @@ public class MongoDB_Operations {
     public CodecRegistry buildPOJO_codecRegistry() {
 		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
 		
-		//ClassModelBuilder<GameCharacter> gameCharacterModelBuilder = ClassModel.builder(GameCharacter.class);
-		//gameCharacterModelBuilder = gameCharacterModelBuilder.enableDiscriminator(true);
-		//ClassModel<GameCharacter> gameCharacterModel = gameCharacterModelBuilder.build();
+		ClassModelBuilder<GameCharacter> gameCharacterModelBuilder = ClassModel.builder(GameCharacter.class);
+		gameCharacterModelBuilder = gameCharacterModelBuilder.enableDiscriminator(true);
+		ClassModel<GameCharacter> gameCharacterModel = gameCharacterModelBuilder.build();
 		
 		ClassModel<Weapon> weaponModel = ClassModel.builder(Weapon.class).enableDiscriminator(true).build();
 		ClassModel<Armor> armorModel = ClassModel.builder(Armor.class).enableDiscriminator(true).build();
-		//ClassModel<Item> itemModel = ClassModel.builder(Item.class).enableDiscriminator(true).build();
+		ClassModel<Item> itemModel = ClassModel.builder(Item.class).enableDiscriminator(true).build();
 		ClassModel<Potion> potionModel = ClassModel.builder(Potion.class).enableDiscriminator(true).build();
 		ClassModel<Ether> etherModel = ClassModel.builder(Ether.class).enableDiscriminator(true).build();
-
 		
 		PojoCodecProvider pojoCodecProvider = PojoCodecProvider
 			.builder()
 			.register(
-				//gameCharacterModel,
+				gameCharacterModel,
 				weaponModel,
 				armorModel,
-				//itemModel,
+				itemModel,
 				potionModel,
 				etherModel
 			)
+			.automatic(false)
 			.build();
 		
-		CodecRegistry modelPojoCodecRegistry = fromRegistries(
+		CodecRegistry pojoCodecRegistry = fromRegistries(
 			defaultCodecRegistry,
 			fromProviders(pojoCodecProvider)
 		);
-		
-		ItemCodec itemCodec = new ItemCodec(defaultCodecRegistry);
-		GameCharacterCodec gameCharacterCodec = new GameCharacterCodec(modelPojoCodecRegistry, itemCodec);
-		
-		CodecRegistry pojoCodecRegistry = fromRegistries(
-				modelPojoCodecRegistry,
-				fromCodecs(
-					itemCodec,
-					gameCharacterCodec
-				)
-			);
-		
 		
 		return pojoCodecRegistry;
 	}
