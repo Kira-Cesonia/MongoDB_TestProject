@@ -1,15 +1,15 @@
 package mongoDB;
 
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import static org.bson.codecs.configuration.CodecRegistries.*;
 
 import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.ClassModel;
-import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.codecs.pojo.*;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoIterable;
 
+import codecs.GameCharacterCodec;
+import codecs.ItemCodec;
 import dataObjects.Armor;
 import dataObjects.Ether;
 import dataObjects.GameCharacter;
@@ -46,25 +46,46 @@ public class MongoDB_Operations {
     public CodecRegistry buildPOJO_codecRegistry() {
 		CodecRegistry defaultCodecRegistry = MongoClient.getDefaultCodecRegistry();
 		
-		ClassModel<GameCharacter> gameCharacterModel = ClassModel.builder(GameCharacter.class).enableDiscriminator(true).build();
+		//ClassModelBuilder<GameCharacter> gameCharacterModelBuilder = ClassModel.builder(GameCharacter.class);
+		//gameCharacterModelBuilder = gameCharacterModelBuilder.enableDiscriminator(true);
+		//ClassModel<GameCharacter> gameCharacterModel = gameCharacterModelBuilder.build();
+		
 		ClassModel<Weapon> weaponModel = ClassModel.builder(Weapon.class).enableDiscriminator(true).build();
 		ClassModel<Armor> armorModel = ClassModel.builder(Armor.class).enableDiscriminator(true).build();
-		ClassModel<Item> itemModel = ClassModel.builder(Item.class).enableDiscriminator(true).build();
+		//ClassModel<Item> itemModel = ClassModel.builder(Item.class).enableDiscriminator(true).build();
 		ClassModel<Potion> potionModel = ClassModel.builder(Potion.class).enableDiscriminator(true).build();
 		ClassModel<Ether> etherModel = ClassModel.builder(Ether.class).enableDiscriminator(true).build();
 
+		
 		PojoCodecProvider pojoCodecProvider = PojoCodecProvider
 			.builder()
 			.register(
-				gameCharacterModel,
+				//gameCharacterModel,
 				weaponModel,
 				armorModel,
-				itemModel,
+				//itemModel,
 				potionModel,
 				etherModel
 			)
 			.build();
-		CodecRegistry pojoCodecRegistry = fromRegistries(defaultCodecRegistry, fromProviders(pojoCodecProvider));
+		
+		CodecRegistry modelPojoCodecRegistry = fromRegistries(
+			defaultCodecRegistry,
+			fromProviders(pojoCodecProvider)
+		);
+		
+		ItemCodec itemCodec = new ItemCodec(defaultCodecRegistry);
+		GameCharacterCodec gameCharacterCodec = new GameCharacterCodec(modelPojoCodecRegistry, itemCodec);
+		
+		CodecRegistry pojoCodecRegistry = fromRegistries(
+				modelPojoCodecRegistry,
+				fromCodecs(
+					itemCodec,
+					gameCharacterCodec
+				)
+			);
+		
+		
 		return pojoCodecRegistry;
 	}
 }

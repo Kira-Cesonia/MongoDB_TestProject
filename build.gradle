@@ -29,7 +29,7 @@ dependencies {
     testCompile("org.junit.platform:junit-platform-runner:1.6.0")
 	
 	//MongoDB Driver
-	compile 'org.mongodb:mongodb-driver:3.5.0'
+	compile 'org.mongodb:mongodb-driver:3.6.0'
 	
 	compile 'commons-logging:commons-logging:1.2'
 }
