@@ -1,0 +1,27 @@
+repositories {
+    maven {
+        url "http://repo.spring.io/milestone"
+    }
+}
+
+javadoc {
+    failOnError = false
+}
+
+dependencies {
+    compile project(':javers-core')
+
+    compile "org.aspectj:aspectjweaver:$aspectjweaverVersion"
+    compile "org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:$jbossTransactionApiVersion"
+
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework.data:spring-data-commons:$springDataCommonsVersion"
+    compile "org.springframework.security:spring-security-core:$springSecurityVersion"
+
+    testCompile "org.springframework:spring-test:$springVersion"
+    testCompile "org.spockframework:spock-spring:$spockVersion"
+    testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embeddedMongo"
+
+    testCompile "org.springframework.boot:spring-boot-starter-data-mongodb:$springBootVersion"
+    testCompile project(':javers-persistence-mongo')
+}
